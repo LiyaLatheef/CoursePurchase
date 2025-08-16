@@ -1,0 +1,40 @@
+﻿@model IEnumerable<CoursePurchasePostgreSQL.Models.Batch>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+@foreach (var item in Model)
+{
+    <div class="col">
+        <a asp-action="Details" asp-route-id="@item.BatchId" class="text-decoration-none text-dark">
+
+        <div class="card h-100">
+            <img src="/images/@item.BatchImageUrl" class="card-img-top" alt="@item.BatchName" style="object-fit:cover; height:200px;">
+            <div class="card-body">
+                <h5 class="card-title">@item.BatchName</h5>
+                <p class="card-text">
+                    <strong>Status:</strong> @item.Status <br />
+                    <strong>End:</strong> @item.EndDate?.ToShortDateString() <br />
+                    <strong>Duration:</strong> @item.Duration <br />
+                    <strong>Fees:</strong> @item.Fees <br />
+                    <strong>Details:</strong> @item.Details <br />
+                </p>
+            </div>
+            @* <div class="card-footer bg-transparent border-top-0">
+                <a asp-action="Edit" asp-route-id="@item.BatchId" class="btn btn-sm btn-primary">Edit</a>
+                <a asp-action="Details" asp-route-id="@item.BatchId" class="btn btn-sm btn-info">Details</a>
+                <a asp-action="Delete" asp-route-id="@item.BatchId" class="btn btn-sm btn-danger">Delete</a>
+            </div> *@
+        </div>
+        </a>
+    </div>
+}
+</div>
