@@ -361,3 +361,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+#ignoring the context file 
+CoursePurchasePostgreSQL/Models/CoursePurchaseContext.cs
