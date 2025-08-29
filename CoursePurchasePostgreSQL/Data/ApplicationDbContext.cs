@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using CoursePurchasePostgreSQL.Models;
 
 namespace CoursePurchasePostgreSQL.Data
 {
@@ -9,5 +10,6 @@ namespace CoursePurchasePostgreSQL.Data
             : base(options)
         {
         }
+        public DbSet<CoursePurchasePostgreSQL.Models.Cart> Cart { get; set; } = default!;
     }
 }

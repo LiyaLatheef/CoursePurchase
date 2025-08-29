@@ -1,32 +1,31 @@
-﻿using CoursePurchasePostgreSQL.Models;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using CoursePurchasePostgreSQL.Models;
 
 namespace CoursePurchasePostgreSQL.Controllers
 {
-    //[Authorize]
-    public class BatchesController : Controller
+    public class CartsController : Controller
     {
         private readonly CoursePurchaseContext _context;
 
-        public BatchesController(CoursePurchaseContext context)
+        public CartsController(CoursePurchaseContext context)
         {
             _context = context;
         }
 
-        // GET: Batches
+        // GET: Carts
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Batches.ToListAsync());
+            var coursePurchaseContext = _context.Carts.Include(c => c.Batch);
+            return View(await coursePurchaseContext.ToListAsync());
         }
 
-        // GET: Batches/Details/5
+        // GET: Carts/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -34,39 +33,42 @@ namespace CoursePurchasePostgreSQL.Controllers
                 return NotFound();
             }
 
-            var batch = await _context.Batches
-                .FirstOrDefaultAsync(m => m.BatchId == id);
-            if (batch == null)
+            var cart = await _context.Carts
+                .Include(c => c.Batch)
+                .FirstOrDefaultAsync(m => m.CartId == id);
+            if (cart == null)
             {
                 return NotFound();
             }
 
-            return View(batch);
+            return View(cart);
         }
 
-        // GET: Batches/Create
+        // GET: Carts/Create
         public IActionResult Create()
         {
+            ViewData["BatchId"] = new SelectList(_context.Batches, "BatchId", "BatchId");
             return View();
         }
 
-        // POST: Batches/Create
+        // POST: Carts/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("BatchId,BatchName,StartDate,TentativeEndDate,EndDate,Fees,FeesPaid,Duration,HoursTaken,Status,Details,Remarks,BatchImageUrl")] Batch batch)
+        public async Task<IActionResult> Create([Bind("CartId,UserID,Quantity,Amount,TotalPrice,CreatedDate,BatchId")] Cart cart)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(batch);
+                _context.Add(cart);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(batch);
+            ViewData["BatchId"] = new SelectList(_context.Batches, "BatchId", "BatchId", cart.BatchId);
+            return View(cart);
         }
 
-        // GET: Batches/Edit/5
+        // GET: Carts/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -74,22 +76,23 @@ namespace CoursePurchasePostgreSQL.Controllers
                 return NotFound();
             }
 
-            var batch = await _context.Batches.FindAsync(id);
-            if (batch == null)
+            var cart = await _context.Carts.FindAsync(id);
+            if (cart == null)
             {
                 return NotFound();
             }
-            return View(batch);
+            ViewData["BatchId"] = new SelectList(_context.Batches, "BatchId", "BatchId", cart.BatchId);
+            return View(cart);
         }
 
-        // POST: Batches/Edit/5
+        // POST: Carts/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("BatchId,BatchName,StartDate,TentativeEndDate,EndDate,Fees,FeesPaid,Duration,HoursTaken,Status,Details,Remarks,BatchImageUrl")] Batch batch)
+        public async Task<IActionResult> Edit(int id, [Bind("CartId,UserID,Quantity,Amount,TotalPrice,CreatedDate,BatchId")] Cart cart)
         {
-            if (id != batch.BatchId)
+            if (id != cart.CartId)
             {
                 return NotFound();
             }
@@ -98,12 +101,12 @@ namespace CoursePurchasePostgreSQL.Controllers
             {
                 try
                 {
-                    _context.Update(batch);
+                    _context.Update(cart);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!BatchExists(batch.BatchId))
+                    if (!CartExists(cart.CartId))
                     {
                         return NotFound();
                     }
@@ -114,10 +117,11 @@ namespace CoursePurchasePostgreSQL.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(batch);
+            ViewData["BatchId"] = new SelectList(_context.Batches, "BatchId", "BatchId", cart.BatchId);
+            return View(cart);
         }
 
-        // GET: Batches/Delete/5
+        // GET: Carts/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -125,34 +129,35 @@ namespace CoursePurchasePostgreSQL.Controllers
                 return NotFound();
             }
 
-            var batch = await _context.Batches
-                .FirstOrDefaultAsync(m => m.BatchId == id);
-            if (batch == null)
+            var cart = await _context.Carts
+                .Include(c => c.Batch)
+                .FirstOrDefaultAsync(m => m.CartId == id);
+            if (cart == null)
             {
                 return NotFound();
             }
 
-            return View(batch);
+            return View(cart);
         }
 
-        // POST: Batches/Delete/5
+        // POST: Carts/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var batch = await _context.Batches.FindAsync(id);
-            if (batch != null)
+            var cart = await _context.Carts.FindAsync(id);
+            if (cart != null)
             {
-                _context.Batches.Remove(batch);
+                _context.Carts.Remove(cart);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool BatchExists(int id)
+        private bool CartExists(int id)
         {
-            return _context.Batches.Any(e => e.BatchId == id);
+            return _context.Carts.Any(e => e.CartId == id);
         }
     }
 }
