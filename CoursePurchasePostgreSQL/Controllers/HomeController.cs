@@ -1,9 +1,11 @@
-using System.Diagnostics;
 using CoursePurchasePostgreSQL.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 
 namespace CoursePurchasePostgreSQL.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
