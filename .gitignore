@@ -362,14 +362,8 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 
-<<<<<<< HEAD
-# Custom ignored files
+
+
 CoursePurchasePostgreSQL/Models/CoursePurchaseContext.cs
-=======
-CoursePurchasePostgreSQL/Models/CoursePurchaseContext.cs
-# CoursePurchase/CoursePurchasePostgreSQL/efpt.config.json
-
-# CoursePurchasePostgreSQL/efpt.config.json
 
 
->>>>>>> 21e60ef8529287ed344cfe233eb65bf70cda841d
